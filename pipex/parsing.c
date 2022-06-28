@@ -3,26 +3,31 @@
 char	*parsing(char **env, char *cmd, char **av)
 {
 	char **splitted;
-	int i = 0;
+	int i;
+	i = 0;
 	char *join1;
 	char *join2;
 	while (*env && ft_strncmp(*env, "PATH=", 5))
 		env++;
-	printf("^^^%s\n", *env);
+//	printf("^^^%s\n", *env);
 	if (!ft_strncmp(*env, "PATH=", 5))
 			splitted = ft_split((*env + 5), ':');
 	while (splitted[i])
 	{
-		printf("%s\n", splitted[i]);
+	//	printf("%s\n", splitted[i]);
 		i++;
 	}
 	i = 0;
 	while (splitted[i])
 	{
+		//join1 = malloc(sizeof(char) * ft_strlen(splitted[i] + 1));
 		join1 = ft_strjoin(splitted[i], "/");
+		//join2 = malloc(sizeof(char) * (ft_strlen(join1) + ft_strlen(cmd) + 1));
 		join2 = ft_strjoin(join1, cmd);
 		if (!access(join2, F_OK))
 			break;
+		//free(join1);
+		//free(join2);
 		i++;
 	}
 	return (join2);
@@ -35,14 +40,14 @@ void	double_free(char **arr)
 		free(arr[i]);
 }
 
-void	child1(int fd2, int infile, char **av, char **env)
+void	child1(int fd1, int infile, char **av, char **env)
 {
 	int		from_infile;
-	from_infile = dup2(infile, STDIN_FILENO);//STDIN_FILENO == 0
-	close(infile);
+	from_infile = dup2(infile, STDIN_FILENO);
+	//close(infile);
 	int		to_out;
-	to_out = dup2(fd2, STDOUT_FILENO);//STDOUT_FILENO == 1
-	close(fd2);
+	to_out = dup2(fd1, STDOUT_FILENO);
+	close(fd1);
 	if (from_infile < 0 || to_out < 0)
 	{
 		perror("dup2() returns -1");
@@ -55,14 +60,14 @@ void	child1(int fd2, int infile, char **av, char **env)
 	execve(cmd1, needed_args, env);
 }
 
-void	child2(int fd1, int outfile, char **av, char **env)
+void	child2(int fd0, int outfile, char **av, char **env)
 {
 	int		fromcmd1;
-	fromcmd1 = dup2(fd1, STDIN_FILENO);
-	close(fd1);
+	fromcmd1 = dup2(fd0, STDIN_FILENO);
+	close(fd0);
 	int		to_outfile;
 	to_outfile = dup2(outfile, STDOUT_FILENO);
-	close(outfile);
+	//close(outfile);
 	if (fromcmd1 < 0 || to_outfile < 0)
 	{
 		perror("dup2() returns -1");
@@ -75,7 +80,7 @@ void	child2(int fd1, int outfile, char **av, char **env)
 	execve(cmd2, cmd2_args, env);
 }
 
-void	pipex(int inf, int outf, char **av, char **env)
+void	pipex(int inffd, int outffd, char **av, char **env)
 {
 	pid_t	pid1;
 	pid_t	pid2;
@@ -88,11 +93,11 @@ void	pipex(int inf, int outf, char **av, char **env)
 	pid1 = fork();
 	if (pid1 < 0)
 	{
-		perror("fork() is < 0");	
+		perror("fork() is < 0");
 		exit(EXIT_FAILURE);
 	}
-	if (pid1 == 0)//we are in a child process
-		child1(fds[0], inf, av, env);
+	if (pid1 == 0)
+		child1(fds[1], inffd, av, env);
 	else if (pid1 != 0)//we are in parent, we do 2nd fork(), because it's safe to have 2 child processes, cause when child1(cmd1) segfaults, cmd2 is gonna work, otherwise it will segfault too.
 	{
 		pid2 = fork();
@@ -102,7 +107,7 @@ void	pipex(int inf, int outf, char **av, char **env)
 			exit(EXIT_FAILURE);
 		}
 		if (pid2 == 0)
-			child2(fds[1], outf, av, env);
+			child2(fds[0], outffd, av, env);
 		close(fds[0]);
 		close(fds[1]);
 		waitpid(-1, NULL, 0);
@@ -112,9 +117,9 @@ void	pipex(int inf, int outf, char **av, char **env)
 int main(int ac, char **av, char **env)
 {
 	int infile;
-	infile = open(av[1], O_RDONLY, 04);
+	infile = open(av[1], O_RDONLY);
 	int outfile;
-	outfile = open(av[ac - 1], O_RDONLY | O_CREAT | O_TRUNC, 0644);
+	outfile = open(av[ac - 1], O_RDWR | O_CREAT | O_TRUNC, 0644);
 	//if the file is already created TRUNC deletes containing of the file and writes new one, 6 - read and write, 4 - read
 	if (infile < 0)
 	{
@@ -127,7 +132,5 @@ int main(int ac, char **av, char **env)
 		exit(EXIT_SUCCESS);
 	}
 	if (ac >= 2)
-	{
 		pipex(infile, outfile, av, env);
-	}
 }
