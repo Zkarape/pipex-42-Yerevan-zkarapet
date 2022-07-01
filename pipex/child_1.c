@@ -1,27 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strncmp.c                                       :+:      :+:    :+:   */
+/*   child_1.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: zkarapet <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/06/29 19:10:44 by zkarapet          #+#    #+#             */
-/*   Updated: 2022/06/29 19:10:45 by zkarapet         ###   ########.fr       */
+/*   Created: 2022/07/01 19:16:24 by zkarapet          #+#    #+#             */
+/*   Updated: 2022/07/01 19:30:01 by zkarapet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-int	ft_strncmp(char *s1, char *s2, unsigned int n)
+void	child1(int fd1, int infile, char **av, char **env)
 {
-	unsigned int	i;
+	int		from_infile;
+	int		to_out;
+	char	**needed_args;
+	char	*cmd1;
 
-	i = 0;
-	while (i < n && ((unsigned char)s1[i] || (unsigned char)s2[i]))
+	from_infile = dup2(infile, STDIN_FILENO);
+	close(infile);
+	to_out = dup2(fd1, STDOUT_FILENO);
+	close(fd1);
+	if (from_infile < 0 || to_out < 0)
 	{
-		if ((unsigned char)s1[i] != (unsigned char)s2[i])
-			return ((unsigned char)s1[i] - (unsigned char)s2[i]);
-		i++;
+		perror("dup2() returns -1");
+		exit(EXIT_FAILURE);
 	}
-	return (0);
+	cmd1 = parsing(env, av[2]);
+	needed_args = ft_split(av[2], ' ');
+	execve(cmd1, needed_args, env);
+	perror("lol");
 }
