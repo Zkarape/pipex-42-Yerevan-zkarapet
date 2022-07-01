@@ -6,7 +6,7 @@ OBJS = $(SRCS:.c=.o)
 FLAGS = -Wall -Werror -Wextra
 
 $(NAME): $(OBJS)
-	cc $(OBJS) -o $(NAME)
+	cc $(OBJS) $(FLAGS) -o $(NAME)
 
 all: $(NAME)
 clean:
