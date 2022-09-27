@@ -6,7 +6,7 @@
 /*   By: zkarapet <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/29 19:10:59 by zkarapet          #+#    #+#             */
-/*   Updated: 2022/07/01 22:41:51 by zkarapet         ###   ########.fr       */
+/*   Updated: 2022/09/27 20:30:11 by zkarapet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,8 +39,10 @@ char	*parsing(char **env, char *cmd_arg)
 	int		i;
 	char	**cmd;
 
-	i = 0;
+	i = -1;
 	splitted = NULL;
+	if (access(cmd_arg, F_OK) == 0)
+		return (cmd_arg);
 	cmd = ft_split(cmd_arg, ' ');
 	while (*env)
 	{

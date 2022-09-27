@@ -3,7 +3,7 @@ NAME = pipex
 SRCS = $(wildcard *.c)
 OBJS = $(SRCS:.c=.o)
 
-FLAGS = -Wall -Werror -Wextra
+FLAGS = -Wall -Werror -Wextra -g -ggdb3
 
 $(NAME): $(OBJS)
 	cc $(OBJS) $(FLAGS) -o $(NAME)

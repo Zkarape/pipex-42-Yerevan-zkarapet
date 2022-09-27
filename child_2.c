@@ -6,7 +6,7 @@
 /*   By: zkarapet <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 19:17:45 by zkarapet          #+#    #+#             */
-/*   Updated: 2022/07/01 22:39:55 by zkarapet         ###   ########.fr       */
+/*   Updated: 2022/09/27 20:30:36 by zkarapet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ void	child2(int fd0, int outfile, char **av, char **env)
 	close(outfile);
 	if (fromcmd1 < 0 || to_outfile < 0)
 	{
-		perror("dup2() returns -1");
+		perror("dup2() from 2 returns -1");
 		exit(EXIT_FAILURE);
 	}
 	cmd2 = parsing(env, av[3]);
@@ -34,4 +34,5 @@ void	child2(int fd0, int outfile, char **av, char **env)
 	double_free(cmd2_args);
 	free(cmd2);
 	perror("not lol");
+	exit(1);
 }

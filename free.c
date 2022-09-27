@@ -6,7 +6,7 @@
 /*   By: zkarapet <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 19:18:53 by zkarapet          #+#    #+#             */
-/*   Updated: 2022/07/01 19:29:02 by zkarapet         ###   ########.fr       */
+/*   Updated: 2022/09/27 18:45:33 by zkarapet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,4 +19,5 @@ void	double_free(char **arr)
 	i = 0;
 	while (arr[i++])
 		free(arr[i]);
+	free(arr);
 }
