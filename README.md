@@ -1,6 +1,6 @@
 # Pipex - 42 School Project
 
-📚 Project Overview
+## 📚 Project Overview
 Pipex is a project from 42 School designed to teach students about UNIX system calls, file descriptors, and process piping.
 The objective is to recreate a simplified version of shell piping (|) by executing two commands with input/output redirection between them.
 
@@ -8,7 +8,7 @@ This project was completed by:
 
 zhenkar2003
 
-🛠️ File Structure
+## 🛠️ File Structure
 
 File	Description
 Makefile	Compilation instructions to easily build the project.
@@ -27,7 +27,7 @@ ft_strncmp.c	Custom implementation of strncmp.
 test/	(Optional) Folder for testing scripts/files.
 (Note: .DS_Store and .parsing.c.swp are system/temporary files and not related to the project.)
 
-🎯 How to Compile and Run
+## 🎯 How to Compile and Run
 Clone and Navigate
 Clone the repository and go into the directory.
 
@@ -56,11 +56,12 @@ bash
 Clean the project
 To remove object files and the executable:
 
-bash
 
 make clean
 make fclean
-🔥 Key Concepts
+
+## 🔥 Key Concepts
+
 fork(): Create new processes.
 
 pipe(): Create a unidirectional communication channel.
@@ -73,7 +74,7 @@ File Descriptors: Manage input/output redirection.
 
 Memory Management: Avoid memory leaks by properly freeing.
 
-📄 Notes
+## 📄 Notes
 No external functions like system() are used.
 
 Only allowed functions from 42's norm are used.
